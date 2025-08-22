@@ -169,7 +169,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                             ),
                             const SizedBox(height: 14),
                             DropdownButtonFormField<String>(
-                              value: _feedbackType,
+                              initialValue: _feedbackType,
                               items: _feedbackTypes
                                   .map(
                                     (type) => DropdownMenuItem(
@@ -179,8 +179,9 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                                   )
                                   .toList(),
                               onChanged: (val) {
-                                if (val != null)
+                                if (val != null) {
                                   setState(() => _feedbackType = val);
+                                }
                               },
                               decoration: InputDecoration(
                                 labelText: 'Feedback About',

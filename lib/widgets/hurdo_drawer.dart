@@ -1,10 +1,7 @@
-import 'package:share_plus/share_plus.dart';
 import 'package:flutter/material.dart';
-import 'feedback_screen.dart';
 
 class HurdoDrawer extends StatelessWidget {
-  final void Function(int)? onSelectTab;
-  const HurdoDrawer({super.key, this.onSelectTab});
+  const HurdoDrawer({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +17,6 @@ class HurdoDrawer extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // 1. App logo, name and tagline (centered)
             Padding(
               padding: const EdgeInsets.symmetric(
                 vertical: 32.0,
@@ -29,7 +25,6 @@ class HurdoDrawer extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // Logo (replace with your asset if available)
                   CircleAvatar(
                     radius: 32,
                     backgroundColor: theme.colorScheme.primary.withOpacity(
@@ -54,7 +49,7 @@ class HurdoDrawer extends StatelessWidget {
                   Text(
                     'Relax, Sleep, Enjoy',
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.colorScheme.onBackground.withOpacity(0.7),
+                      color: theme.colorScheme.onSurface.withOpacity(0.7),
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -62,7 +57,6 @@ class HurdoDrawer extends StatelessWidget {
               ),
             ),
             const Divider(),
-            // 2. List and Favourite buttons
             ListTile(
               leading: Icon(
                 Icons.library_music_outlined,
@@ -77,13 +71,9 @@ class HurdoDrawer extends StatelessWidget {
                 color: theme.colorScheme.primary,
               ),
               title: const Text('Favourites'),
-              onTap: () {
-                Navigator.of(context).pop();
-                onSelectTab?.call(1);
-              },
+              onTap: () {},
             ),
             const Divider(),
-            // 4. Rate us, Share, Other apps
             ListTile(
               leading: Icon(
                 Icons.star_border,
@@ -98,15 +88,7 @@ class HurdoDrawer extends StatelessWidget {
                 color: theme.colorScheme.primary,
               ),
               title: const Text('Share App'),
-              onTap: () async {
-                Navigator.of(context).pop();
-                await Future.delayed(
-                  const Duration(milliseconds: 250),
-                ); // Wait for drawer to close
-                await Share.share(
-                  'Check out Hurdo+ for relaxing and sleep sounds! Download now: https://play.google.com/store/apps/details?id=com.yourcompany.hurdo_plus',
-                );
-              },
+              onTap: () {},
             ),
             ListTile(
               leading: Icon(
@@ -114,15 +96,7 @@ class HurdoDrawer extends StatelessWidget {
                 color: theme.colorScheme.primary,
               ),
               title: const Text('Send Feedback'),
-              onTap: () async {
-                Navigator.of(context).pop();
-                await Future.delayed(const Duration(milliseconds: 250));
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const FeedbackScreen(),
-                  ),
-                );
-              },
+              onTap: () {},
             ),
             ListTile(
               leading: Icon(
@@ -133,7 +107,6 @@ class HurdoDrawer extends StatelessWidget {
               onTap: () {},
             ),
             const Divider(),
-            // 5. Support and Contact Us (separated)
             Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: 16.0,
@@ -155,13 +128,11 @@ class HurdoDrawer extends StatelessWidget {
                     onPressed: () {},
                   ),
                   const SizedBox(height: 8),
-                  // ...removed feedback OutlinedButton...
                 ],
               ),
             ),
             const SizedBox(height: 12),
             const Spacer(),
-            // 3. Support dev button (now at the bottom)
             Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: 16.0,

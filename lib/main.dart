@@ -1,174 +1,141 @@
 import 'package:flutter/material.dart';
+import 'screens/home_screen.dart';
+import 'services/global_audio.dart';
 
-import 'screens/onboarding_screen.dart';
-import 'screens/main_shell.dart';
-import 'services/local_storage_service.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-// Theme color options
-class AppTheme {
-  final String name;
-  final Color primary;
-  final Color accent;
-  final Color background;
-  final Color surface;
-  final Color onPrimary;
-  final Color onBackground;
-  final Color onSurface;
-  AppTheme({
-    required this.name,
-    required this.primary,
-    required this.accent,
-    required this.background,
-    required this.surface,
-    required this.onPrimary,
-    required this.onBackground,
-    required this.onSurface,
-  });
+void main() {
+  runApp(const HurdoPlusApp());
 }
 
-final appThemes = [
-  AppTheme(
-    name: 'Blue',
-    primary: Color(0xFF3A6FE8),
-    accent: Color(0xFFBFD6FF),
-    background: Color(0xFF223A5F),
-    surface: Color(0xFF223A5F),
-    onPrimary: Colors.white,
-    onBackground: Colors.white,
-    onSurface: Colors.white,
-  ),
-  AppTheme(
-    name: 'Purple',
-    primary: Color(0xFF7C3AED),
-    accent: Color(0xFFD1B3FF),
-    background: Color(0xFF2D205F),
-    surface: Color(0xFF2D205F),
-    onPrimary: Colors.white,
-    onBackground: Colors.white,
-    onSurface: Colors.white,
-  ),
-  AppTheme(
-    name: 'Green',
-    primary: Color(0xFF34D399),
-    accent: Color(0xFFB9FBC0),
-    background: Color(0xFF1B3A2F),
-    surface: Color(0xFF1B3A2F),
-    onPrimary: Colors.white,
-    onBackground: Colors.white,
-    onSurface: Colors.white,
-  ),
-  AppTheme(
-    name: 'Red',
-    primary: Color(0xFFEF4444),
-    accent: Color(0xFFFCA5A5),
-    background: Color(0xFF3B1F1F),
-    surface: Color(0xFF3B1F1F),
-    onPrimary: Colors.white,
-    onBackground: Colors.white,
-    onSurface: Colors.white,
-  ),
-  AppTheme(
-    name: 'Pink',
-    primary: Color(0xFFEC4899),
-    accent: Color(0xFFF9A8D4),
-    background: Color(0xFF3A2232),
-    surface: Color(0xFF3A2232),
-    onPrimary: Colors.white,
-    onBackground: Colors.white,
-    onSurface: Colors.white,
-  ),
-  AppTheme(
-    name: 'Teal',
-    primary: Color(0xFF14B8A6),
-    accent: Color(0xFF99F6E4),
-    background: Color(0xFF183C3A),
-    surface: Color(0xFF183C3A),
-    onPrimary: Colors.white,
-    onBackground: Colors.white,
-    onSurface: Colors.white,
-  ),
-  AppTheme(
-    name: 'Yellow',
-    primary: Color(0xFFFACC15),
-    accent: Color(0xFFFEF08A),
-    background: Color(0xFF3A341F),
-    surface: Color(0xFF3A341F),
-    onPrimary: Colors.black,
-    onBackground: Colors.white,
-    onSurface: Colors.white,
-  ),
-  AppTheme(
-    name: 'Gray',
-    primary: Color(0xFF64748B),
-    accent: Color(0xFFCBD5E1),
-    background: Color(0xFF23272F),
-    surface: Color(0xFF23272F),
-    onPrimary: Colors.white,
-    onBackground: Colors.white,
-    onSurface: Colors.white,
-  ),
-];
-
-final themeIndexProvider = StateProvider<int>((ref) => 0); // default to Blue
-
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await LocalStorageService.init();
-  runApp(const ProviderScope(child: HurdoPlusApp()));
-}
-
-class HurdoPlusApp extends ConsumerWidget {
+class HurdoPlusApp extends StatefulWidget {
   const HurdoPlusApp({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final themeIndex = ref.watch(themeIndexProvider);
-    final theme = appThemes[themeIndex];
-    final colorScheme = ColorScheme(
-      brightness: Brightness.dark,
-      primary: theme.primary,
-      onPrimary: theme.onPrimary,
-      secondary: theme.accent,
-      onSecondary: theme.onPrimary,
-      error: Colors.red.shade200,
-      onError: Colors.black,
-      background: theme.background,
-      onBackground: theme.onBackground,
-      surface: theme.surface,
-      onSurface: theme.onSurface,
-    );
-    return MaterialApp(
-      title: 'Hurdo+',
-      theme: ThemeData(
-        brightness: Brightness.dark,
-        useMaterial3: true,
-        colorScheme: colorScheme,
-        fontFamily: 'Roboto',
-        scaffoldBackgroundColor: theme.background,
-        cardColor: theme.surface,
-        appBarTheme: AppBarTheme(
-          backgroundColor: theme.background,
-          foregroundColor: theme.accent,
-          elevation: 0,
-        ),
-      ),
-      home: const OnboardingOrMain(),
-      debugShowCheckedModeBanner: false,
-    );
-  }
+  State<HurdoPlusApp> createState() => _HurdoPlusAppState();
 }
 
-class OnboardingOrMain extends ConsumerWidget {
-  const OnboardingOrMain({super.key});
+class _HurdoPlusAppState extends State<HurdoPlusApp> {
+  int _themeIndex = 0;
+  final _globalAudio = AppAudioController();
+
+  static final List<ThemeData> themes = [
+    // Ocean Blue (keep existing palette)
+    ThemeData(
+      brightness: Brightness.dark,
+      useMaterial3: true,
+      colorScheme: ColorScheme.dark(
+        primary: Color(0xFF1976D2), // Vivid blue
+        secondary: Color(0xFF00B8D4), // Cyan accent
+        surface: Color(0xFF1A2236),
+        onPrimary: Colors.white,
+        onSecondary: Colors.black,
+        onSurface: Colors.white,
+      ),
+      scaffoldBackgroundColor: const Color(0xFF101624),
+      cardColor: Color(0xFF1A2236),
+      appBarTheme: const AppBarTheme(
+        backgroundColor: Color(0xFF151C2C),
+        foregroundColor: Colors.white,
+        elevation: 0,
+      ),
+    ),
+    // Sunset Orange (new)
+    ThemeData(
+      brightness: Brightness.dark,
+      useMaterial3: true,
+      colorScheme: ColorScheme.dark(
+        primary: Color(0xFFFF7043), // Deep orange
+        secondary: Color(0xFFFFC400), // Amber accent
+        surface: Color(0xFF2A1E18),
+        onPrimary: Colors.white,
+        onSecondary: Colors.black,
+        onSurface: Colors.white,
+      ),
+      scaffoldBackgroundColor: const Color(0xFF1C1410),
+      cardColor: const Color(0xFF2A1E18),
+      appBarTheme: const AppBarTheme(
+        backgroundColor: Color(0xFF2A1E18),
+        foregroundColor: Colors.white,
+        elevation: 0,
+      ),
+    ),
+    // Forest Green (new)
+    ThemeData(
+      brightness: Brightness.dark,
+      useMaterial3: true,
+      colorScheme: ColorScheme.dark(
+        primary: Color(0xFF00BFA5), // Teal green
+        secondary: Color(0xFFB2FF59), // Lime accent
+        surface: Color(0xFF18332A),
+        onPrimary: Colors.white,
+        onSecondary: Colors.black,
+        onSurface: Colors.white,
+      ),
+      scaffoldBackgroundColor: const Color(0xFF10201A),
+      cardColor: const Color(0xFF18332A),
+      appBarTheme: const AppBarTheme(
+        backgroundColor: Color(0xFF18332A),
+        foregroundColor: Colors.white,
+        elevation: 0,
+      ),
+    ),
+    // Purple Night (new)
+    ThemeData(
+      brightness: Brightness.dark,
+      useMaterial3: true,
+      colorScheme: ColorScheme.dark(
+        primary: Color(0xFF7C4DFF), // Deep purple
+        secondary: Color(0xFF00E676), // Green accent
+        surface: Color(0xFF241A3A),
+        onPrimary: Colors.white,
+        onSecondary: Colors.black,
+        onSurface: Colors.white,
+      ),
+      scaffoldBackgroundColor: const Color(0xFF1A1333),
+      cardColor: const Color(0xFF241A3A),
+      appBarTheme: const AppBarTheme(
+        backgroundColor: Color(0xFF241A3A),
+        foregroundColor: Colors.white,
+        elevation: 0,
+      ),
+    ),
+    // Teal Dream (keep existing palette)
+    ThemeData(
+      brightness: Brightness.dark,
+      useMaterial3: true,
+      colorScheme: ColorScheme.dark(
+        primary: Color(0xFF00B8A9), // Cyber teal
+        secondary: Color(0xFFFF5252), // Red accent
+        surface: Color(0xFF183A3A),
+        onPrimary: Colors.white,
+        onSecondary: Colors.white,
+        onSurface: Colors.white,
+      ),
+      scaffoldBackgroundColor: const Color(0xFF102222),
+      cardColor: const Color(0xFF183A3A),
+      appBarTheme: const AppBarTheme(
+        backgroundColor: Color(0xFF183A3A),
+        foregroundColor: Colors.white,
+        elevation: 0,
+      ),
+    ),
+  ];
+
+  void _setTheme(int index) {
+    setState(() {
+      _themeIndex = index;
+    });
+  }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final showOnboarding = ref.watch(showOnboardingProvider);
-    if (showOnboarding) {
-      return const OnboardingScreen();
-    } else {
-      return const MainShell();
-    }
+  Widget build(BuildContext context) {
+    return AppAudioScope(
+      controller: _globalAudio,
+      child: MaterialApp(
+        title: 'Hurdo+',
+        theme: themes[_themeIndex],
+        home: HomeScreen(onThemeChanged: _setTheme, selectedTheme: _themeIndex),
+        debugShowCheckedModeBanner: false,
+      ),
+    );
   }
 }
